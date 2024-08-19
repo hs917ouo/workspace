@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base{
+}
+
+@layer components{
+    .btn {
+        @apply focus:ring-opacity-45 shadow-md focus:ring px-2 py-2 rounded-md;
+    }
+}
+@layer utilities {
+    .text-bbb {
+        color: blue;
+    }
+}
 .text-rrr {
     color: red;
 }

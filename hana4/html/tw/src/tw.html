@@ -7,8 +7,29 @@
     <link rel="stylesheet" href="../dist/output.css">
 </head>
 <body>
+
     <div class="containerx mx-autox h-lvh min-w-full bg-scroll bg-center bg-cover" style="background-image: url('https://cdn.pixabay.com/photo/2024/08/05/21/19/lion-8947711_1280.jpg');">
-        <h1 class="text-4xl text-red-500 font-extrabold underline bg-red-200">Title</h1>
+        <div class="flex mb-3 flex-row gap-2 flex-wrap justify-around flex-auto">
+            <div class="basis-1/2 bg-red-300">111</div>
+            <div class="basis-1/4 bg-green-300">222</div>
+            <div class="basis-1/4 bg-blue-300">333</div>
+            <div class="bg-yellow-300 ">444</div>
+            <div class="bg-slate-300">555</div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+            <div class="w-32 bg-red-300 order-2">111</div>
+            <div class="w-32 bg-green-300 order-1">222</div>
+            <div class="w-32 bg-blue-300 order-3">333</div>
+            <div class="w-32 bg-yellow-300 order-4">444</div>
+            <div class="w-32 bg-slate-300 order-5">555</div>
+        </div>
+        <div class="mb-3 p-3">
+            <button class="rounded-md px-2 py-1 border border-spacing-1.5 bg-white">btn</button>
+            <button class="btn text-white bg-blue-500 hover:bg-blue-700 focus-ring-blue-400">BtnPrimary</button>
+            <button class="btn text-white bg-red-500 hover:bg-red-700 focus-ring-red-400">BtnDanger</button>
+            <button class="btn text-white bg-green-500 hover:bg-green-700 focus-ring-green-400">BtnSuccess</button>
+        </div>
+        <h1 class="text-4xl text-white hover:text-black font-extrabold underline bg-red-200">Title</h1>
         <div class="text-3xl w-full overflow-hidden text-ellipsis text-nowrap">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque consequatur perspiciatis aperiam, et hic accusamus error distinctio dolore repellat soluta alias placeat ex ducimus minima provident. Aliquam ut qui ipsa?</div>
         <ul class="border border-red-300 p-3 m-5 ">
             <li class="text-blue-500 first:bg-black">111</li>
