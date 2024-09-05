@@ -1,0 +1,1 @@
+export const WEEKS = '일월화수목금토';
