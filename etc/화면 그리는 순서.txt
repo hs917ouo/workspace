@@ -1,0 +1,42 @@
+화면 그리는 순서
+
+1. 기본 html 구조 호출 - vs코드에서 ! 누른 후 tab 누르기. 언어 ko로 바꾸기. tailwind 연결하기.
+
+2. 레이아웃 설계하기
+	2-1) <body> 태그의 class에 기본적인 css적용하기.
+		a) 배경색 적용하기 : bg-gray-100
+		b) 메인 컨텐츠 위치 조정하기(가운데로) : flex items-center justify-center min-h-screen
+	2-2) 메인 컨텐츠에 css 적용하기.
+		a) 배경색 적용하기 : bg-white
+		b) 패딩 적용하기 : p-8
+		c) 둥글게 만들기 : rounded-lg
+		d) 그림자 적용하기 : shadow-lg
+		e) 좌우 크기 조정하기 : w-full max-w-sm
+	2-3) 제목에 css 적용하기.
+		a) 글자 사이즈 : text-2xl
+		b) 폰트 : font-bold
+		c) margin : mb-6
+		d) 글자 색깔 : text-gray-800
+	2-4) 입력 폼에 들어갈만큼의 구역 할당. <div class="mb-4"></div>
+	2-5) 입력 폼에 <label> 태그 넣기.
+		a) block을 적용하면 label이 한 줄을 차지함.
+		b) 마진을 적용하여 적절히 띄워주자. mb-2
+	2-6) 입력 폼에 <input> 태그 넣기.
+		a) type, id, placeholder 적용
+		b) 좌우 크기 조정 : w-full
+		c) 패딩 적용 : px-3 py-2
+		d) 둥글게 만들기 : rounded-lg
+		e) 그림자 적용하기 : shadow-sm
+		f) 포커스 주기 : focus:outline-none focus:ring-2 focus:ring-indigo-500
+	2-7) 입력 폼에 <button> 태그 넣기.
+		a) <div>의 class를 flex items-center justify-center로 적용하여 가운데로 오도록.
+		b) button의 type을 submit으로 지정.
+		c) button에 들어갈 글자 입력 <button>여기에</button>
+		d) 좌우 크기 조정 : w-full
+		e) 배경색 적용 : bg-indigo-500
+		f) 글자색 적용 : text-white
+		g) 패딩 적용 : py-2
+		h) 둥글게 만들기 : rounded-lg
+		i) hover 적용하기 : hover:bg-indigo-600
+		j) 부드럽게 만들기 : transition duration-200
+		

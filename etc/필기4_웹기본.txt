@@ -1,0 +1,33 @@
+WAS
+
+Tomcat servlet container Spring Bean
+Pm2 node
+python
+Rust
+
+Web Server
+
+Apache
+Ngnix
+WEBTOBE
+
+cache는 http 응답이 304면 cache를 쓰고,
+200이면 웹서버에서 받아온다.
+
+웹서버 == http 서버
+
+Non-Block I/O 방식을 사용하는 Ngnix / Node
+
+톰캣, 쓰레드풀
+
+redirection과 forward의 차이
+redirection은 사이트가 바뀜
+forward는 사이트가 안바뀜
+
+400
+403 forbidden
+404 not found ㅋㅋ
+
+login signUp POST
+
+httpOnly == True

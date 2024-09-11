@@ -1,0 +1,38 @@
+FE BE
+언어!
+FE
+React
+Next.js
+
+Android + IOS => Kotlin, Swift
+
+BE
+Nest
+Spring
+DBA
+DevOps
+Infra -> OS, NW
+
+
+
+
+
+C/C++과 Rust는 비슷한 계열인듯
+
+코드의 성능은 알고리즘은 20-30%, 아키텍쳐가 70-80%
+
+아팟치, 톰캣, NginX도 고칠 줄 알아야..!
+
+프론트엔드 -> 스토리북?
+
+-----------------------
+
+부팅...
+ROM BIOS에 하드웨어 정보가 심어져있다.
+ROM = read only memory
+
+setter
+
+load -> 적재한다. 가져온다.
+
+프로세스마다 메모리가 확보된다.

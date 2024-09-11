@@ -1,0 +1,77 @@
+const assert = require("assert");
+
+class Collection {
+  #arr = [];
+  constructor(...args) {
+    this.#arr.push(...args);
+  }
+  get _arr() {
+    return this.#arr;
+  }
+
+  push(...args) {
+    this.#arr.push(...args);
+    return this.#arr;
+  }
+
+  get peek() {
+    return this.#isQueue() ? this.#arr[0] : this.#arr.at(-1);
+  }
+
+  get poll() {
+    return this.#isQueue() ? this.#arr.shift() : this.#arr.pop();
+  }
+
+  remove() {
+    return this.poll;
+  }
+
+  get length() {
+    return this.#arr.length;
+  }
+
+  get isEmpty() {
+    return !this.#arr.length;
+  }
+
+  clear() {
+    this.#arr.length = 0;
+  }
+
+  toArray() {
+    return this.#isQueue() ? this.#arr.toReversed() : this.#arr;
+  }
+
+  print() {
+    console.log(`<${this.constructor.name}: [${this.toArray()}]>`);
+  }
+
+  #isQueue() {
+    // console.log('>>', this.constructor.name); // exact-matching
+    return this instanceof Queue;
+  }
+  [Symbol.iterator]() {
+    let idx = 0;
+    return {
+      next: () => ({
+        value: this.#arr[idx++],
+        done: idx > this.length,
+      }),
+    };
+  }
+}
+
+class Stack extends Collection {
+  pop() {
+    return this._arr.pop();
+  }
+}
+
+class Queue extends Collection {
+  enqueue(...args) {
+    return this.push(...args);
+  }
+  dequeue() {
+    return this._arr.shift();
+  }
+}

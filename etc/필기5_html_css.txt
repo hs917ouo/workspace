@@ -1,0 +1,17 @@
+node
+deno
+bun
+pnpm
+
+layout -> paint
+
+layout = sync
+paint = async
+
+block inline
+
+block p h1 h2 div
+inline span string small
+
+memory에 dom이 올라온 것 = mount
+

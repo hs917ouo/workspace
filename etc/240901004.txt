@@ -1,0 +1,41 @@
+const assert = require("assert");
+
+const arr = [1, 2, 3, 4, 5];
+
+const hong = { id: 1, name: "Hong" };
+const kim = { id: 2, name: "Kim" };
+const lee = { id: 3, name: "Lee" };
+const users = [hong, lee, kim];
+
+Array.prototype.mapBy = function () {
+  return [1, 3, 2];
+};
+
+Array.prototype.filterBy = function (prop, value) {
+  return [kim];
+};
+
+Array.prototype.rejectBy = function (prop, value) {
+  return [hong, lee];
+};
+
+Array.prototype.sortBy = function (prop) {
+  const [key, direction = "asc"] = prop?.split(":");
+  const dir = direction.toLowerCase() === "desc" ? -1 : 1;
+
+  return this.sort((a, b) => (a[key] > b[key] ? dir : -dir));
+};
+
+assert.deepStrictEqual(users.mapBy("id"), [1, 3, 2]);
+// assert.deepStrictEqual(users.mapBy("name"), ["Hong", "Lee", "Kim"]);
+assert.deepStrictEqual(users.filterBy("id", 2), [kim]);
+assert.deepStrictEqual(users.rejectBy("id", 2), [hong, lee]);
+// assert.deepStrictEqual(users.findBy("name", "Kim"), kim);
+assert.deepStrictEqual(users.sortBy("name"), [hong, kim, lee]);
+assert.deepStrictEqual(users.sortBy("name:desc"), [lee, kim, hong]);
+// assert.deepStrictEqual(users.firstObject, hong);
+// assert.deepStrictEqual(users.lastObject, kim);
+// users.lastObject = lee;
+// assert.deepStrictEqual(users.firstObject, lee);
+// users.lastObject = hong;
+// assert.deepStrictEqual(users.lastObject, hong);

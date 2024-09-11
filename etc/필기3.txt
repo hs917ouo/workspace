@@ -1,0 +1,17 @@
+git checkout -b feature
+vi ttt.txt
+git push -u origin feature
+git clone -b feature https://github.com/hs917ouo/workspace.git ff
+cd ff
+echo 'aaa' > aaa.txt
+git push
+cd org-dir
+git pull
+git checkout develop
+git merge feature
+git branch -d feature
+git push origin -d feature
+git log --oneline -5
+졸려잉
+당 떨어져
+과자 먹고 싶다

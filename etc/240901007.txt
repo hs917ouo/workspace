@@ -1,0 +1,90 @@
+const assert = require("assert");
+
+// Stack, Queue, ArrayList
+class Collection {
+  #arr = [];
+
+  constructor(...args) {
+    this.#arr.push(...args);
+  }
+
+  get _arr() {
+    return this.#arr;
+  }
+
+  push(...args) {
+    this.#arr.push(...args);
+    return this.#arr;
+  }
+
+  get peek() {
+    return this.#isQueue() ? this.#arr[0] : this.#arr.at(-1);
+  }
+
+  get poll() {
+    return this.#isQueue() ? this.#arr.shift() : this.#arr.pop();
+  }
+
+  remove() {
+    return this.poll;
+  }
+
+  get length() {
+    return this.#arr.length;
+  }
+
+  get isEmpty() {
+    return !this.#arr.length;
+  }
+
+  clear() {
+    this.#arr.length = 0;
+  }
+
+  *[Symbol.iterator]() {
+    for (let i = 0; i < this.length; i++) {
+      yield this.toArray().toReversed()[i];
+    }
+  }
+
+  toArray() {
+    return this.#isQueue() ? this.#arr.toReversed() : this.#arr;
+  }
+
+  print() {
+    console.log(`<${this.constructor.name}: [${this.toArray()}]>`);
+  }
+
+  #isQueue() {
+    // console.log('>>', this.constructor.name); // exact-matching
+    return this instanceof Queue;
+  }
+}
+
+class Stack extends Collection {
+  pop() {
+    // return this.#arr.pop();
+    return this._arr.pop();
+  }
+}
+
+class Queue extends Collection {
+  enqueue(...args) {
+    this.push(...args);
+    return this._arr;
+  }
+
+  dequeue() {
+    return this._arr.shift();
+  }
+}
+const stack2 = new Stack(1, 2, 2, 4, 5);
+
+assert.deepStrictEqual(stack2.toArray(), [1, 2, 2, 4, 5]);
+assert.deepStrictEqual([...stack2], stack2.toArray());
+
+//...
+
+const queue = new Queue(2, 5, 6);
+assert.deepStrictEqual(queue.toArray(), [6, 5, 2]);
+assert.deepStrictEqual([...queue], queue.toArray());
