@@ -1,26 +1,19 @@
-import { useState } from 'react';
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css';
+import { useRef } from 'react';
+import Hello, { MyHandler } from './components/Hello';
+import My from './components/My';
+import { SessionProvider } from './hooks/session-context.tsx';
+// import { useCounter } from './hooks/counter-hook';
 
 function App() {
-  const [count, setCount] = useState(1);
-
+  const myHandleRef = useRef<MyHandler>(null);
   return (
-    <>
-      <h1>Hello World!</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count * 2)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='flex flex-col items-center'>
+      <SessionProvider>
+        <Hello age={33} ref={myHandleRef} />
+        <hr />
+        <My />
+      </SessionProvider>
+    </div>
   );
 }
 
