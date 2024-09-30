@@ -3,22 +3,29 @@ import {
   createRef,
   PropsWithChildren,
   useContext,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 import { LoginHandler } from '../components/Login';
+import { useFetch } from './fetch-hook';
+import useToggle from './toggle';
 
+// const SampleSession = {
+//   loginUser: { id: 1, name: '홍길동' },
+//   cart: [
+//     { id: 100, name: '라면', price: 3000 },
+//     { id: 101, name: '컵라면', price: 2000 },
+//     { id: 200, name: '파', price: 5000 },
+//   ],
+// };
 const SampleSession = {
-  loginUser: { id: 1, name: '홍길동' },
-  cart: [
-    { id: 100, name: '라면', price: 3000 },
-    { id: 101, name: '컵라면', price: 2000 },
-    { id: 200, name: '파', price: 5000 },
-  ],
+  loginUser: null,
+  cart: [],
 };
 
-type LoginUser = typeof SampleSession.loginUser;
-type CartItem = { id: number; name: string; price: number };
+type LoginUser = { id: number; name: string };
+export type CartItem = { id: number; name: string; price: number };
 export type Session = { loginUser: LoginUser | null; cart: CartItem[] };
 
 const contextInitValue = {
@@ -29,7 +36,9 @@ const contextInitValue = {
   },
   removeCartItem: (id: number) => console.log(id),
   addCartItem: (name: string, price: number) => console.log(name, price),
+  editCartItem: (item: CartItem) => console.log(item),
   loginRef: createRef<LoginHandler>(),
+  toggleReloadSession: () => {},
 };
 
 type SessionContextProps = Omit<typeof contextInitValue, 'session'> & {
@@ -40,6 +49,15 @@ const SessionContext = createContext<SessionContextProps>(contextInitValue);
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
   const [session, setSession] = useState<Session>(SampleSession);
+  const [reloadSession, toggleReloadSession] = useToggle();
+
+  const { data } = useFetch<Session>('/data/sample.json', true, [
+    reloadSession,
+  ]);
+  // console.log('🚀  data:', data);
+  useLayoutEffect(() => {
+    setSession(data || SampleSession);
+  }, [data]);
 
   const loginRef = useRef<LoginHandler>(null);
 
@@ -75,9 +93,27 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     });
   };
 
+  const editCartItem = (item: CartItem) => {
+    setSession({
+      ...session,
+      cart: session.cart.map((oldItem) =>
+        oldItem.id === item.id ? item : oldItem
+      ),
+    });
+  };
+
   return (
     <SessionContext.Provider
-      value={{ session, logout, login, removeCartItem, addCartItem, loginRef }}
+      value={{
+        session,
+        logout,
+        login,
+        removeCartItem,
+        addCartItem,
+        editCartItem,
+        loginRef,
+        toggleReloadSession,
+      }}
     >
       {children}
     </SessionContext.Provider>

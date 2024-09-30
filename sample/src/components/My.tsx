@@ -1,55 +1,56 @@
-import { FaPlus, FaTrashCan } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa6';
 import Login from './Login.tsx';
 import Profile from './Profile.tsx';
 import Button from './atoms/Button.tsx';
-import { FormEvent, useRef, useState } from 'react';
-import { FaRedo, FaSave } from 'react-icons/fa';
-import { useCounter } from '../hooks/counter-hook.tsx';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useSession } from '../hooks/session-context.tsx';
+import Item from './Item.tsx';
+import useToggle from '../hooks/toggle.ts';
+import { useDebounce, useTimeout } from '../hooks/timer-hooks.ts';
 
-export default function My() {
-  const { session, removeCartItem, addCartItem } = useSession();
-  const { plusCount } = useCounter();
-  const [isEditing, setIsEditing] = useState(false);
+type Props = {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  searchRef: React.RefObject<HTMLInputElement>;
+};
+
+export default function My({ search, setSearch, searchRef }: Props) {
+  const { session, toggleReloadSession } = useSession();
   const logoutButtonRef = useRef<HTMLButtonElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const priceRef = useRef<HTMLInputElement>(null);
 
-  const toggleEditing = () => {
-    setIsEditing((pre) => !pre);
-    plusCount();
-  };
+  // };
+  const [isAdding, toggleAdding] = useToggle();
+  const [, toggleReRender] = useToggle();
 
-  const removeItem = (id: number) => {
-    if (confirm('Are u sure?')) {
-      removeCartItem(id);
-    }
-  };
+  const totalPrice = useMemo(
+    () => session.cart.reduce((acc, item) => acc + item.price, 0),
+    [session.cart]
+  );
 
-  const saveItem = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const name = nameRef.current?.value;
-    const price = priceRef.current?.value;
-    // console.log('🚀  name/price:', name, price);
-    if (!name) {
-      alert('상품명을 입력하세요!');
-      return nameRef.current?.focus();
-    } else if (!price) {
-      alert('금액을 입력하세요!');
-      return priceRef.current?.focus();
-    }
+  const dcPrice = useMemo(() => totalPrice * 0.1, [totalPrice]);
 
-    addCartItem(name, +price);
-    nameRef.current.value = '';
-    priceRef.current.value = '';
-    nameRef.current.focus();
-  };
+  useDebounce(
+    () => {
+      setSearch(searchRef.current?.value || '');
+    },
+    1000,
+    [searchRef.current?.value]
+  );
+
+  useLayoutEffect(() => {
+    console.log('$$$', totalPrice);
+  }, [totalPrice]);
+
+  let xxx = 0;
+  useTimeout(() => {
+    xxx++;
+  }, 1000);
 
   return (
     <>
       {session.loginUser ? (
         <div className='flex gap-5'>
-          <Profile ref={logoutButtonRef} />
+          <Profile ref={logoutButtonRef} xxx={xxx} />
           <Button onClick={() => logoutButtonRef.current?.focus()}>
             MySignOut
           </Button>
@@ -58,56 +59,47 @@ export default function My() {
         <Login />
       )}
 
+      <div className='mt-3 w-64'>
+        <input
+          type='text'
+          defaultValue={search}
+          onChange={toggleReRender}
+          ref={searchRef}
+          placeholder='search...'
+          className='inp'
+        />
+      </div>
+
       <ul className='my-3 w-2/3 border p-3'>
         {session.cart?.length ? (
-          session.cart.map(({ id, name, price }) => (
-            <li key={id} className='flex justify-between'>
-              <strong>
-                {id}. {name}
-                <small className='ml-2 font-light text-gray-500'>
-                  {price.toLocaleString()}원
-                </small>
-              </strong>
-              <button
-                onClick={() => removeItem(id)}
-                className='btn btn-danger px-1 py-0'
-              >
-                <FaTrashCan />
-              </button>
-            </li>
-          ))
+          session.cart
+            .filter(({ name }) => name.includes(search))
+            .map((item) => (
+              <li key={item.id}>
+                <Item item={item} />
+              </li>
+            ))
         ) : (
           <li className='text-slate-500'>There is no items.</li>
         )}
         <li className='mt-3 text-center'>
-          {isEditing ? (
-            <form onSubmit={saveItem} className='mt-3 flex gap-3'>
-              <input
-                ref={nameRef}
-                type='text'
-                placeholder='name..'
-                className='inp'
-              />
-              <input
-                ref={priceRef}
-                type='number'
-                placeholder='price..'
-                className='inp'
-              />
-              <Button type='reset' onClick={toggleEditing}>
-                <FaRedo />
-              </Button>
-              <Button type='submit' variant='btn-primary'>
-                <FaSave />
-              </Button>
-            </form>
+          {isAdding ? (
+            <Item
+              item={{ id: 0, name: '', price: 0 }}
+              toggleAdding={() => toggleAdding()}
+            />
           ) : (
-            <Button onClick={toggleEditing}>
+            <Button onClick={toggleAdding}>
               <FaPlus /> Add Item
             </Button>
           )}
         </li>
       </ul>
+      <div className='mb-3 flex gap-5'>
+        <span>*총액: {totalPrice.toLocaleString()}원</span>
+        <span>*할인: {dcPrice.toLocaleString()}원</span>
+      </div>
+      <Button onClick={toggleReloadSession}>Reload Session</Button>
     </>
   );
 }
