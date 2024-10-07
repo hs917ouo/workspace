@@ -28,6 +28,7 @@ export const useFetch = <T>(
   const [error, setError] = useState<ErrorWithMessage>();
 
   useEffect(() => {
+    // console.log('useFetch>>', depArr);
     const abortController = new AbortController();
     const { signal } = abortController;
 

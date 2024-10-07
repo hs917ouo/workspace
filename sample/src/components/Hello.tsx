@@ -1,138 +1,119 @@
-import {
-  ForwardedRef,
-  forwardRef,
-  ReactNode,
-  useImperativeHandle,
-  useState,
-} from 'react';
-import { useCounter } from '../hooks/counter-hook';
+import { FaPlus } from 'react-icons/fa6';
+import { FaSearch } from 'react-icons/fa';
+import Button from './atoms/Button';
+import { useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import useToggle from '../hooks/toggle';
+import { useDebounce } from '../hooks/timer-hooks';
 import { useSession } from '../hooks/session-context';
-import { useFetch } from '../hooks/fetch-hook';
-import { FaSpinner } from 'react-icons/fa6';
+import Item from './Item';
 
-type TitleProps = {
-  text: string;
-  name?: string;
-};
+export default function Items() {
+  const { session } = useSession();
+  // const [isAdding, setIsAdding] = useState(false);
+  // const toggleAdding = () => {
+  //   setIsAdding((pre) => !pre);
+  // };
+  // const [isAdding, toggleAdding] = useToggle();
+  const [isAdding, toggleAdding] = useReducer((pre) => !pre, false);
 
-const Title = ({ text, name }: TitleProps) => {
-  // console.log('Titttttttttttttt!!');
-  return (
-    <h1 className='text-3xl'>
-      {text} {name}
-    </h1>
+  // onChange={(e) => addPrice(+e.currentTarget.value)}
+  // const [totalPrice, addPrice] = useReducer(
+  //   (acc, toAddPrice) => acc + toAddPrice,
+  //   0
+  // );
+
+  const [, toggleSearch] = useToggle();
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [searchstr, setSearchstr] = useState('');
+
+  useDebounce(
+    () => {
+      // console.log('useDebounce.search>>', searchRef.current?.value);
+      setSearchstr(searchRef.current?.value || '');
+    },
+    200,
+    [searchRef.current?.value]
   );
-};
 
-const Body = ({ children }: { children: ReactNode }) => {
-  // console.log('bodddddddd!!!');
-  return (
-    <div className='red' style={{ color: 'blue' }}>
-      {children}
-    </div>
-  );
-};
+  const [ulHeight, setUlHeight] = useState(0);
 
-// function useState<S>(initValueOrFn) {
-//   const state = {
-//     _state: initValueOrFn,
-//     get state() {
-//       return this._state;
-//     },
-//     setState(x: S) {
-//       this._state = x;
-//       vdom.trigger(this);
-//     }
-//   }
-
-//   return [state.state, state.setState];
-// }
-
-type Props = {
-  friend: number;
-};
-
-export type MyHandler = {
-  jumpHelloState: () => void;
-};
-
-type PlaceUser = {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-};
-
-function Hello({ friend }: Props, ref: ForwardedRef<MyHandler>) {
-  // const [myState, setMyState] = useState(() => new Date().getTime());
-  const {
-    session: { loginUser },
-  } = useSession();
-  const { count, plusCount, minusCount } = useCounter();
-  const [myState, setMyState] = useState(0);
-  let v = 1;
-
-  const handler: MyHandler = {
-    jumpHelloState: () => setMyState((pre) => pre * 10),
+  // const ulCbRef = useCallback(
+  //   (node: HTMLUListElement) => {
+  //     console.log('node>>>', node, session.cart.length);
+  //     setUlHeight(node?.clientHeight);
+  //   },
+  //   [session.cart.length]
+  // );
+  const ulCbRef = (node: HTMLUListElement) => {
+    // console.log('node>>>', node, session.cart.length);
+    setUlHeight(node?.clientHeight);
   };
-  useImperativeHandle(ref, () => handler);
 
-  const {
-    data: friendInfo,
-    isLoading,
-    error,
-  } = useFetch<PlaceUser>(
-    `https://jsonplaceholder.typicode.com/users/${friend}`,
-    true,
-    [friend]
+  // const primitive = 123;
+
+  // useEffect(() => {
+  //   console.log('*******11', primitive, isAdding);
+
+  //   return () => console.log('unmount11!!');
+  // }, [primitive, isAdding]);
+
+  const totalPrice = useMemo(
+    () => session.cart?.reduce((acc, item) => acc + item.price, 0),
+    [session.cart]
   );
 
+  const dcPrice = useMemo(() => totalPrice * 0.1, [totalPrice]);
+
+  useLayoutEffect(() => {
+    // console.log('$$$$$$$$$$$$$$$$', totalPrice);
+  }, [totalPrice]);
+
   return (
-    <div className='bg-blackx text-whitex my-5 w-2/3 border border-slate-300 p-3 text-center'>
-      <Title text='Hello~' name={loginUser?.name} />
-      <Body>
-        <h3 className='text-center text-lg'>myState: {myState}</h3>
-        {isLoading && (
-          <h3 className='flex justify-center'>
-            <FaSpinner size={20} className='animate-spin text-slate-500' />
-          </h3>
-        )}
-        {error ? (
-          <strong className='text-red-500'>
-            {error.message && error.message.startsWith('404')
-              ? `Your friend is not found(${friend})`
-              : error.message}
-          </strong>
-        ) : (
-          <div className='flex h-10 items-center justify-center rounded-lg shadow-[0_0_10px_purple]'>
-            My friend is {friendInfo?.username}.
-          </div>
-        )}
-        <p>
-          {v} - {friend}
-        </p>
-      </Body>
-      <button
-        onClick={() => {
-          v++;
-          setMyState(myState + 1);
-          plusCount();
-          // console.log('v/myState=', v, myState);
-        }}
-        className='btn'
-      >
-        Hello(+)
-      </button>
-      <strong id='cnt' className='mx-5'>
-        {count}
-      </strong>
-      <button onClick={() => minusCount()} className='btn btn-danger'>
-        Minus
-      </button>
-    </div>
+    <>
+      <div className='w-full border p-3'>
+        <div className='flex items-center gap-2'>
+          <FaSearch />
+          <input
+            // onChange={(e) => setSearchstr(e.currentTarget.value)}
+            onChange={toggleSearch}
+            ref={searchRef}
+            type='text'
+            placeholder='아이템명 검색...'
+            className='inp'
+          />
+        </div>
+        <ul ref={ulCbRef} className='mt-3 px-3'>
+          {session.cart?.length ? (
+            session.cart
+              .filter(({ name }) => name.includes(searchstr))
+              .map((item) => (
+                <li key={item.id}>
+                  <Item item={item} />
+                </li>
+              ))
+          ) : (
+            <li className='text-slate-500'>There is no items.</li>
+          )}
+          <li className='mt-3 text-center'>
+            {isAdding ? (
+              <Item
+                item={{ id: 0, name: '', price: 0 }}
+                toggleAdding={() => toggleAdding()}
+              />
+            ) : (
+              <Button onClick={toggleAdding}>
+                <FaPlus /> Add Item
+              </Button>
+            )}
+          </li>
+        </ul>
+      </div>
+
+      <div className='mb-3 flex gap-5'>
+        <span>*총액: {totalPrice?.toLocaleString()}원</span>
+        <span>*할인: {dcPrice.toFixed(0).toLocaleString()}원</span>
+        <span>{ulHeight}</span>
+      </div>
+    </>
   );
 }
-
-const ImpHello = forwardRef(Hello);
-
-export default ImpHello;
