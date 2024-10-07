@@ -16,6 +16,6 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1"
-  }
-  "deploy": "gh-pages -d dist", 
+  },
+  "deploy": "gh-pages -d dist"
 }
